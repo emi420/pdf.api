@@ -1,9 +1,4 @@
 .DS_Store
 **/.DS_Store
 **/*.pyc
-data.sql3
-media/img/img/*
-media/pdf
-media/pdf_bkp
 ENV
-_test
