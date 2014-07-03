@@ -1,4 +1,5 @@
 import requests
+from decorators import HttpOptionsDecorator, VoolksAPIAuthRequired
 from django.http import HttpResponse
 from django.template import RequestContext
 from django.template.loader import render_to_string
@@ -7,6 +8,8 @@ from app import settings
 import StringIO
 import ho.pisa as pisa 
 
+@HttpOptionsDecorator
+@VoolksAPIAuthRequired
 def html2pdf(request):
 
     url = request.GET['url']
