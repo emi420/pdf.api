@@ -10,12 +10,19 @@ import ho.pisa as pisa
 
 @HttpOptionsDecorator
 @VoolksAPIAuthRequired
-def html2pdf(request):
+def xhtml2pdf(request):
 
     url = request.GET['url']
-    r = requests.get(url, verify=False)
+    htmlsrc = ""
+    
+    if request.META["REQUEST_METHOD"] == "POST":
+        htmlsrc = request.POST.items()[0][0]
 
-    html = render_to_string('blank.html', {'html': r.text},
+    if url:
+        r = requests.get(url, verify=False)
+        htmlsrc = r.text
+
+    html = render_to_string('blank.html', {'html': htmlsrc},
                             context_instance=RequestContext(request))
     result = StringIO.StringIO()
     pdf = pisa.pisaDocument(
