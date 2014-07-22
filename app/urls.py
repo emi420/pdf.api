@@ -4,7 +4,7 @@ import settings
 urlpatterns = patterns('',
     url(r'^media/(?P<path>.*)$', 'django.views.static.serve',
         {'document_root': settings.MEDIA_ROOT}),
-    url(r'^', 'app.views.html2pdf'),
+    url(r'^', 'app.views.xhtml2pdf'),
     
 )
 
