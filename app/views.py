@@ -12,13 +12,13 @@ import ho.pisa as pisa
 @VoolksAPIAuthRequired
 def xhtml2pdf(request):
 
-    url = request.GET['url']
+    url = ""
     htmlsrc = ""
     
     if request.META["REQUEST_METHOD"] == "POST":
         htmlsrc = request.POST.items()[0][0]
-
-    if url:
+    else:
+        request.GET['url']
         r = requests.get(url, verify=False)
         htmlsrc = r.text
 
