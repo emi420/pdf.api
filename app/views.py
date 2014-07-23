@@ -1,10 +1,12 @@
 import requests
 from decorators import HttpOptionsDecorator, VoolksAPIAuthRequired
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseRedirect
 from django.template import RequestContext
 from django.template.loader import render_to_string
 from django_xhtml2pdf.utils import generate_pdf
 from app import settings
+from os import urandom
+import json
 import StringIO
 import ho.pisa as pisa 
 
@@ -24,11 +26,21 @@ def xhtml2pdf(request):
 
     html = render_to_string('blank.html', {'html': htmlsrc},
                             context_instance=RequestContext(request))
-    result = StringIO.StringIO()
-    pdf = pisa.pisaDocument(
-            StringIO.StringIO(html.encode('ascii', 'xmlcharrefreplace')),
-            result, link_callback=link_callback)
-    return HttpResponse(result.getvalue(), mimetype='application/pdf')
+            
+    if request.META["REQUEST_METHOD"] == "POST":
+        filename = str(urandom(16).encode('hex')) + ".pdf"
+        result = open('/var/www/pdf.voolks.com/media/' + filename, 'wb') 
+        pdf = pisa.pisaDocument(StringIO.StringIO(
+            html.encode("UTF-8")), result)
+        result.close()
+        url = "/media/" + filename
+        return HttpResponse(json.dumps({'url': url}), content_type="application/json"); 
+    else:
+        result = StringIO.StringIO()
+        pdf = pisa.pisaDocument(
+                StringIO.StringIO(html.encode('ascii', 'xmlcharrefreplace')),
+                result, link_callback=link_callback)
+        return HttpResponse(result.getvalue(), mimetype='application/pdf')
 
 
 def link_callback(uri, rel):
