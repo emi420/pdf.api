@@ -28,13 +28,15 @@ def xhtml2pdf(request):
                             context_instance=RequestContext(request))
             
     if request.META["REQUEST_METHOD"] == "POST":
-        filename = str(urandom(16).encode('hex')) + ".pdf"
+        rhash = str(urandom(16).encode('hex'))
+        filename = rhash + ".pdf"
         result = open('/var/www/pdf.voolks.com/media/' + filename, 'wb') 
-        pdf = pisa.pisaDocument(StringIO.StringIO(
-            html.encode("UTF-8")), result)
+        pdf = pisa.pisaDocument(
+                StringIO.StringIO(html.encode('ascii', 'xmlcharrefreplace')),
+                result, link_callback=link_callback)
         result.close()
         url = "/media/" + filename
-        return HttpResponse(json.dumps({'url': url}), content_type="application/json"); 
+        return HttpResponse(json.dumps('id': rhash, 'url': url}), content_type="application/json"); 
     else:
         result = StringIO.StringIO()
         pdf = pisa.pisaDocument(
