@@ -32,8 +32,7 @@ def xhtml2pdf(request):
         filename = rhash + ".pdf"
         result = open('/var/www/pdf.voolks.com/media/' + filename, 'wb') 
         pdf = pisa.pisaDocument(
-                StringIO.StringIO(html.encode('ascii', 'xmlcharrefreplace')),
-                result, link_callback=link_callback)
+                StringIO.StringIO(html.encode('ascii')), result)
         result.close()
         url = "/media/" + filename
         return HttpResponse(json.dumps('id': rhash, 'url': url}), content_type="application/json"); 
